@@ -1,0 +1,26 @@
+# emacs
+*~
+
+# compiled
+*.pyc
+
+# IntelliJ
+.idea
+*.iml
+
+# VSCode
+.vscode
+
+# data
+data
+
+# notebook
+notebooks/.ipynb_checkpoints
+
+## PyCache
+
+**/__pycache__
+__pycache__/
+
+## DS_Store
+**/.DS_Store
