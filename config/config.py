@@ -6,7 +6,9 @@ CFG = {
         "images_folder" : "data/CelebA/img_align_celeba/img_align_celeba/",
         "IMG_HEIGHT": "218",
         "IMG_WIDTH": "178",
-        "TRAINING_SAMPLES": "10000"
+        "TRAINING_SAMPLES": "10000",
+        "VALIDATION_SAMPLES": "2000",
+        "TEST_SAMPLES": "2000"
     },
     "model": {
         "input": [218, 178, 3]

@@ -1,4 +1,6 @@
+import os
 import cv2
+import shutil
 import keras
 import pandas as pd
 import numpy as np
@@ -9,11 +11,11 @@ class DataLoader:
     """
 
     @staticmethod
-    def get_train_data(data_config):
-        
-        x_train, y_train = generate_df(data_config, 0, "Blond_Hair", data_config.data.TRAINING_SAMPLES)
+    def load_data(data_config, prefix = "blond"):
 
-        train_datagen = keras.preprocessing.image.ImageDataGenerator(
+        generate_dirs(data_config, "Blond_Hair", prefix)
+
+        train_datagen =  keras.preprocessing.image.ImageDataGenerator(
             preprocessing_function=keras.applications.inception_v3.preprocess_input,
             rotation_range=30,
             width_shift_range=0.2,
@@ -23,29 +25,82 @@ class DataLoader:
             horizontal_flip=True
         )
 
-        train_datagen.fit(x_train)
+        valid_datagen = keras.preprocessing.image.ImageDataGenerator(
+            preprocessing_function=keras.applications.inception_v3.preprocess_input,
+            rotation_range=30,
+            width_shift_range=0.2,
+            height_shift_range=0.2,
+            shear_range=0.2,
+            zoom_range=0.2,
+            horizontal_flip=True
+        )
 
-        train_generator = train_datagen.flow(x_train, y_train,
-            batch_size= data_config.train.batch_size)
 
-        return train_generator
+        train_generator = train_datagen.flow_from_directory(
+            'data/celeba-dataset/{}-train'.format(prefix),
+                target_size=(data_config.data.IMG_HEIGHT, data_config.data.IMG_WIDTH),
+                batch_size=data_config.train.batch_size)
 
+        validation_generator = valid_datagen.flow_from_directory(
+            'data/celeba-dataset/{}-validation'.format(prefix),
+                target_size=(data_config.data.IMG_HEIGHT, data_config.data.IMG_WIDTH),
+                class_mode='categorical')
 
-## Helper Functions
+        return train_generator, validation_generator
 
-def load_reshape_img(fname):
-    img = keras.preprocessing.image.load_img(fname)
-    x = keras.preprocessing.image.img_to_array(img)/255.
-    x = x.reshape((1,) + x.shape)
-    return x
-
-def generate_df(data_config,partition, attr, num_samples):
+# Helper Functions
+"""
+Ported from Marcos Alvarado's Repository https://github.com/bmarcoos/udacity-capstone-project
+with few changes to the API
+"""
+def generate_dirs(data_config,attr, prefix):
     """
     partition = {
         0 : train
         1 : validation
         2 : test}
     """
+    create_file_folder(prefix)
+    print('Generate dataframe with file names for the model')
+    df_train, df_val, df_test = generate_df(data_config, attr)
+    print('\nCopying the images...')
+    copy_images(prefix, attr, df_train, 'train')
+    copy_images(prefix, attr, df_val, 'validation')
+    copy_images(prefix, attr, df_test, 'test')
+
+def create_file_folder(prefix):
+    '''
+    create folders in order to use the flow_from_directory method form keras
+    
+    creates folders:
+        train/0
+        train/1
+        validation/0
+        validation/1
+        test/0
+        test/1
+        
+    '''
+    
+    list_type_ds = ['train', 'validation', 'test']
+    
+    # Delete path if exists
+    for typ in list_type_ds:
+        if os.path.exists('data/celeba-dataset/{}-{}'.format(prefix, typ)):
+            shutil.rmtree('data/celeba-dataset/{}-{}'.format(prefix, typ))
+       
+    # Create paths for training, validation and test data
+    for typ in list_type_ds:
+        os.makedirs('data/celeba-dataset/{}-{}'.format(prefix, typ))
+        os.makedirs('data/celeba-dataset/{}-{}/0'.format(prefix, typ))
+        os.makedirs('data/celeba-dataset/{}-{}/1'.format(prefix, typ))
+
+def generate_df(data_config, attr):
+    '''
+    select the sub data sets from the recommended partition randomly
+    generates balanced data
+    
+    '''
 
     df_attr = pd.read_csv(data_config.data.data_folder + 'list_attr_celeba.csv')
     df_attr.set_index('image_id', inplace=True)
@@ -57,28 +112,44 @@ def generate_df(data_config,partition, attr, num_samples):
     df_partition.set_index('image_id', inplace=True)
     df_par_attr = df_partition.join(df_attr['Blond_Hair'], how='inner')
 
+    print('Attribute:', attr)
+
+    df_train = df_par_attr[(df_par_attr['partition'] == 0) 
+                           & (df_par_attr[attr] == 0)].sample(int(int(data_config.data.TRAINING_SAMPLES)/2))
+
+    df_train = pd.concat([df_train,
+                      df_par_attr[(df_par_attr['partition'] == 0) 
+                                  & (df_par_attr[attr] == 1)].sample(int(int(data_config.data.TRAINING_SAMPLES)/2))])
+
+    df_val = df_par_attr[(df_par_attr['partition'] == 1) 
+                            & (df_par_attr[attr] == 0)].sample(int(int(data_config.data.VALIDATION_SAMPLES)/2)) #file names for validation
+
+    df_val = pd.concat([df_val,
+                        df_par_attr[(df_par_attr['partition'] == 1) & (df_par_attr[attr] == 1)].sample(int(int(data_config.data.VALIDATION_SAMPLES)/2))]) #file names for validation
+
+    df_test = df_par_attr[(df_par_attr['partition'] == 2) & (df_par_attr[attr] == 0)].sample(int(int(data_config.data.TEST_SAMPLES)/2)) 
+    #file names for test
+    df_test = pd.concat([df_test,
+                                  df_par_attr[(df_par_attr['partition'] == 2) & (df_par_attr[attr] == 1)].sample(int(int(data_config.data.TEST_SAMPLES)/2))]) #file names for test
+
+    return df_train, df_val, df_test
+
+def copy_images(folder_prefix, attribute, df_images, df_type):
+    '''
+    copy images to the corresponding folder (classes)
     
-    df_ = df_par_attr[(df_par_attr['partition'] == partition) 
-                           & (df_par_attr[attr] == 0)].sample(int(int(num_samples)/2))
-    df_ = pd.concat([df_,
-                      df_par_attr[(df_par_attr['partition'] == partition) 
-                                  & (df_par_attr[attr] == 1)].sample(int(int(num_samples)/2))])
-
-    # for Train and Validation
-    if partition != 2:
-        x_ = np.array([load_reshape_img(data_config.data.images_folder + fname) for fname in df_.index])
-        x_ = x_.reshape(x_.shape[0], 218, 178, 3)
-        y_ = keras.utils.np_utils.to_categorical(df_[attr],2)
-    # for Test
-    else:
-        x_ = []
-        y_ = []
-
-        for index, target in df_.iterrows():
-            im = cv2.imread(data_config.data.images_folder + index)
-            im = cv2.resize(cv2.cvtColor(im, cv2.COLOR_BGR2RGB), (data_config.data.IMG_WIDTH, data_config.data.IMG_HEIGHT)).astype(np.float32) / 255.0
-            im = np.expand_dims(im, axis =0)
-            x_.append(im)
-            y_.append(target[attr])
-
-    return x_, y_
+    folder_prefix: expected prefix in folder
+    attribute: attribute as in the data set to discriminate the classes
+    df_images: data frame with image file name and attributes
+    df_type: type of data set, train, validation or test
+    
+    '''
+    
+    # Copy images
+    for i, j in df_images.iterrows():
+        if j[attribute] == 0:
+            shutil.copy('data/CelebA/img_align_celeba/img_align_celeba/' + i, 'data/celeba-dataset/{}-{}/0/{}'.format(folder_prefix, df_type, i))
+        if j[attribute] == 1:
+            shutil.copy('data/CelebA/img_align_celeba/img_align_celeba/' + i, 'data/celeba-dataset/{}-{}/1/{}'.format(folder_prefix, df_type, i))
+            
+    print("{} {} - Copy Images: DONE!".format(folder_prefix, df_type))
