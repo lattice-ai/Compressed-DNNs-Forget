@@ -4,6 +4,7 @@ import shutil
 import keras
 import pandas as pd
 import numpy as np
+import tensorflow as tf
 
 class DataLoader:
     """
@@ -39,7 +40,7 @@ class DataLoader:
         train_generator = train_datagen.flow_from_directory(
             'data/celeba-dataset/{}-train'.format(prefix),
                 target_size=(data_config.data.IMG_HEIGHT, data_config.data.IMG_WIDTH),
-                batch_size=data_config.train.batch_size)
+                batch_size=data_config.train.BATCH_SIZE)
 
         validation_generator = valid_datagen.flow_from_directory(
             'data/celeba-dataset/{}-validation'.format(prefix),

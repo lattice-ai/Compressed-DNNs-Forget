@@ -8,12 +8,10 @@ CFG = {
         "IMG_WIDTH": "178",
         "TRAINING_SAMPLES": "10000",
         "VALIDATION_SAMPLES": "2000",
-        "TEST_SAMPLES": "2000"
-    },
-    "model": {
-        "input": [218, 178, 3]
+        "TEST_SAMPLES": "2000",
     },
     "train": {
-        "batch_size": "64"
+        "BATCH_SIZE": "64",
+        "EPOCHS": "10",
     }   
 }

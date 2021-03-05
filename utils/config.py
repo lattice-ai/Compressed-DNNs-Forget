@@ -9,10 +9,9 @@ class Config:
     Config class containing data, train and model hyperparameters
     """
 
-    def __init__(self, data, train, model):
+    def __init__(self, data, train):
         self.data = data
         self.train = train
-        self.model = model
 
     @classmethod
     def from_json(cls, cfg):
@@ -21,7 +20,7 @@ class Config:
         """
 
         params = json.loads(json.dumps(cfg), object_hook=HelperObject)
-        return cls(params.data, params.train, params.model)
+        return cls(params.data, params.train)
 
 
 class HelperObject(object):

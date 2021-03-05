@@ -23,6 +23,9 @@ class BaseModel(ABC):
     def train(self):
         pass
 
+    """
+    Temporariliy for UnitTesting
     @abstractmethod
     def evaluate(self):
         pass
+    """
