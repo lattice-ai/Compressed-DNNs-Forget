@@ -1,6 +1,6 @@
 # External
 import unittest
-import keras
+import tensorflow as tf
 
 # Internal 
 from dataloader.dataloader import DataLoader
@@ -16,8 +16,8 @@ class TestDataLoader(unittest.TestCase):
         configuration = Config.from_json(CFG)
         loader = DataLoader()
         train_generator, validation_generator = loader.load_data(configuration)
-        self.assertIsInstance(train_generator, keras.preprocessing.image.DirectoryIterator)  
-        self.assertIsInstance(validation_generator, keras.preprocessing.image.DirectoryIterator)      
+        self.assertIsInstance(train_generator, tf.keras.preprocessing.image.DirectoryIterator)  
+        self.assertIsInstance(validation_generator, tf.keras.preprocessing.image.DirectoryIterator)      
 
 if __name__ == '__main__':
     unittest.main() 

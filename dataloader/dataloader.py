@@ -1,7 +1,5 @@
 import os
-import cv2
 import shutil
-import keras
 import pandas as pd
 import numpy as np
 import tensorflow as tf
@@ -16,8 +14,8 @@ class DataLoader:
 
         generate_dirs(data_config, "Blond_Hair", prefix)
 
-        train_datagen =  keras.preprocessing.image.ImageDataGenerator(
-            preprocessing_function=keras.applications.inception_v3.preprocess_input,
+        train_datagen =  tf.keras.preprocessing.image.ImageDataGenerator(
+            preprocessing_function=tf.keras.applications.inception_v3.preprocess_input,
             rotation_range=30,
             width_shift_range=0.2,
             height_shift_range=0.2,
@@ -26,8 +24,8 @@ class DataLoader:
             horizontal_flip=True
         )
 
-        valid_datagen = keras.preprocessing.image.ImageDataGenerator(
-            preprocessing_function=keras.applications.inception_v3.preprocess_input,
+        valid_datagen = tf.keras.preprocessing.image.ImageDataGenerator(
+            preprocessing_function=tf.keras.applications.inception_v3.preprocess_input,
             rotation_range=30,
             width_shift_range=0.2,
             height_shift_range=0.2,
@@ -39,12 +37,12 @@ class DataLoader:
 
         train_generator = train_datagen.flow_from_directory(
             'data/celeba-dataset/{}-train'.format(prefix),
-                target_size=(data_config.data.IMG_HEIGHT, data_config.data.IMG_WIDTH),
-                batch_size=data_config.train.BATCH_SIZE)
+                target_size=(int(data_config.data.IMG_HEIGHT), int(data_config.data.IMG_WIDTH)),
+                batch_size=int(data_config.train.BATCH_SIZE))
 
         validation_generator = valid_datagen.flow_from_directory(
             'data/celeba-dataset/{}-validation'.format(prefix),
-                target_size=(data_config.data.IMG_HEIGHT, data_config.data.IMG_WIDTH),
+                target_size=(int(data_config.data.IMG_HEIGHT), int(data_config.data.IMG_WIDTH)),
                 class_mode='categorical')
 
         return train_generator, validation_generator

@@ -1,7 +1,6 @@
 # External
 import unittest
-import keras
-
+import tensorflow as tf 
 # Internal 
 from config.config import CFG
 from model.ForgetModel import Model
@@ -17,17 +16,8 @@ class TestModel(unittest.TestCase):
         """
         # configuration = Config.from_json(CFG)
         model = Model(CFG)
-        self.assertIsInstance(model.build(), keras.models.Model)  
-
-    def test_data(self):
-        """
-        Test for Dataloaders created using the load_data method
-        """
-
-        model = Model(CFG)
-        train_generator, validation_generator = model.load_data()
-        self.assertIsInstance(train_generator, keras.preprocessing.image.DirectoryIterator)  
-        self.assertIsInstance(validation_generator, keras.preprocessing.image.DirectoryIterator)  
+        model.build()
+        self.assertIsInstance(model.model, tf.keras.models.Model)   
 
 if __name__ == '__main__':
     unittest.main() 
