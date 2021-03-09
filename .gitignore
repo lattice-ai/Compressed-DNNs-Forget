@@ -24,3 +24,6 @@ __pycache__/
 
 ## DS_Store
 **/.DS_Store
+
+## Weights
+weights
