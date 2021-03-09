@@ -27,12 +27,15 @@ class Model(BaseModel):
 
         self.train_generator = None
         self.validation_generator = None
+        self.test_generator = None
+
+        self.predictions = None
 
     def load_data(self):
         """
         Loads Training and Validation Generator from the DataLoader Class
         """
-        self.train_generator, self.validation_generator = DataLoader().load_data(self.config)
+        self.train_generator, self.validation_generator, self.test_generator = DataLoader().load_data(self.config)
 
     def build(self):
         """
@@ -79,6 +82,7 @@ class Model(BaseModel):
 
     def prune(self, factor):
         
+        
         pruning_params = {
             'pruning_schedule': tfmot.sparsity.keras.ConstantSparsity(factor, 0),
             'block_size': (1, 1),
@@ -120,3 +124,7 @@ class Model(BaseModel):
             f.write(pruned_tflite_model)
 
         print('Saved pruned TFLite model to:', pruned_tflite_file)
+
+    def predict(self):
+
+        self.predictions = self.model.predict(self.test_generator)

@@ -34,6 +34,8 @@ class DataLoader:
             horizontal_flip=True
         )
 
+        test_datagen = tf.keras.preprocessing.image.ImageDataGenerator()
+
 
         train_generator = train_datagen.flow_from_directory(
             'data/celeba-dataset/{}-train'.format(prefix),
@@ -45,7 +47,14 @@ class DataLoader:
                 target_size=(int(data_config.data.IMG_HEIGHT), int(data_config.data.IMG_WIDTH)),
                 class_mode='categorical')
 
-        return train_generator, validation_generator
+        test_generator = test_datagen.flow_from_directory(
+            'data/celeba-dataset/{}-test'.format(prefix),
+                target_size=(int(data_config.data.IMG_HEIGHT), int(data_config.data.IMG_WIDTH)),
+                batch_size=1,
+                class_mode=None,
+        )
+
+        return train_generator, validation_generator, test_generator
 
 # Helper Functions
 """

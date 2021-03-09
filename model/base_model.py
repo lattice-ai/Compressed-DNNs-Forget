@@ -30,3 +30,7 @@ class BaseModel(ABC):
     @abstractmethod
     def prune(self):
         pass
+
+    @abstractmethod
+    def predict(self):
+        pass
