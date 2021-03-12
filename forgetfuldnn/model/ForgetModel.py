@@ -105,6 +105,7 @@ class Model(BaseModel):
 
         LOG.info("Pruned Model Created ✅, now loading weights")
         self.pruned_model.load_weights(weights)
+        LOG.info("Loaded Weights")
 
     def export_tflite(self):
 
@@ -120,7 +121,6 @@ class Model(BaseModel):
 
         LOG.info(f'Saved pruned TFLite model to:{pruned_tflite_file}')
         
-
     def prune(self, factor):
         
         pruning_params = {
