@@ -1,6 +1,9 @@
 # Internal
 from .base_model import BaseModel
 from forgetfuldnn.dataloader.dataloader import DataLoader
+from forgetfuldnn.utils.logger import get_logger
+
+LOG = get_logger('Model')
 
 # External
 import tempfile
@@ -53,7 +56,7 @@ class Model(BaseModel):
         for layer in self.model.layers[:52]:
             layer.trainable = False
 
-        # return self.model
+        LOG.info("Model Built")
 
     def train(self):
         """
@@ -63,8 +66,12 @@ class Model(BaseModel):
                loss='categorical_crossentropy', 
                metrics=[tf.keras.metrics.TopKCategoricalAccuracy(k = 1)])
 
+        LOG.info("Model Compiled")
+
         checkpointer = tf.keras.callbacks.ModelCheckpoint(filepath='weights.best.inc.blond.hdf5', 
                                verbose=1, save_best_only=True)
+
+        LOG.info("Checkpointer Instantiated, Beginning Training")
 
         model_history = self.model.fit(self.train_generator,
                                         validation_data = self.validation_generator,
@@ -74,14 +81,47 @@ class Model(BaseModel):
 
         self.model.save("baseline.h5")
 
+        LOG.info("Model Saved")
+
         return model_history.history['loss'], model_history.history['val_loss']
 
     def load(self, weights):
-        
+
         self.model.load_weights(weights)
 
-    def prune(self, factor):
+        LOG.info("Weights Loaded ✅")
+
+    def load_pruned(self, weights, factor):
+
+        LOG.info(f"Created Pruned Model with ConstantSparsity:{factor}")
+
+        pruning_params = {
+            'pruning_schedule': tfmot.sparsity.keras.ConstantSparsity(factor, 0),
+            'block_size': (1, 1),
+            'block_pooling_type': 'AVG'
+        }
+
+        self.pruned_model = tfmot.sparsity.keras.prune_low_magnitude(self.model,**pruning_params)
+
+        LOG.info("Pruned Model Created ✅, now loading weights")
+        self.pruned_model.load_weights(weights)
+
+    def export_tflite(self):
+
+        LOG.info("Applying Strip Pruning")
+        model_for_export = tfmot.sparsity.keras.strip_pruning(self.pruned_model)
+        converter = tf.lite.TFLiteConverter.from_keras_model(model_for_export)
+        pruned_tflite_model = converter.convert()
+
+        _, pruned_tflite_file = tempfile.mkstemp('.tflite')
+
+        with open(pruned_tflite_file, 'wb') as f:
+            f.write(pruned_tflite_model)
+
+        LOG.info(f'Saved pruned TFLite model to:{pruned_tflite_file}')
         
+
+    def prune(self, factor):
         
         pruning_params = {
             'pruning_schedule': tfmot.sparsity.keras.ConstantSparsity(factor, 0),
@@ -114,7 +154,7 @@ class Model(BaseModel):
 
         _, pruned_keras_file = tempfile.mkstemp('.h5')
         tf.keras.models.save_model(model_for_export, pruned_keras_file, include_optimizer=False)
-        print('Saved pruned Keras model to:', pruned_keras_file)
+        LOG.info(f'Saved pruned Keras model to:{pruned_keras_file}')
         converter = tf.lite.TFLiteConverter.from_keras_model(model_for_export)
         pruned_tflite_model = converter.convert()
 
@@ -123,8 +163,10 @@ class Model(BaseModel):
         with open(pruned_tflite_file, 'wb') as f:
             f.write(pruned_tflite_model)
 
-        print('Saved pruned TFLite model to:', pruned_tflite_file)
+        LOG.info(f'Saved pruned TFLite model to:{pruned_tflite_file}')
 
     def predict(self):
+
+        LOG.info("Running Predictions")
 
         self.predictions = self.model.predict(self.test_generator)

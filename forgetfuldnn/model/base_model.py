@@ -28,6 +28,14 @@ class BaseModel(ABC):
         pass
 
     @abstractmethod
+    def load_pruned(self):
+        pass
+
+    @abstractmethod
+    def export_tflite(self):
+        pass
+
+    @abstractmethod
     def prune(self):
         pass
 

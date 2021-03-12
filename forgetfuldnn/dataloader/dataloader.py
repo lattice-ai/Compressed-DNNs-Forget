@@ -4,6 +4,10 @@ import pandas as pd
 import numpy as np
 import tensorflow as tf
 
+from forgetfuldnn.utils.logger import get_logger
+
+LOG = get_logger('DataLoader')
+
 class DataLoader:
     """
     Data Loader Class
@@ -69,9 +73,9 @@ def generate_dirs(data_config,attr, prefix):
         2 : test}
     """
     create_file_folder(prefix)
-    print('Generate dataframe with file names for the model')
+    LOG.info('Generate dataframe with file names for the model')
     df_train, df_val, df_test = generate_df(data_config, attr)
-    print('\nCopying the images...')
+    LOG.info('Copying the images...')
     copy_images(prefix, attr, df_train, 'train')
     copy_images(prefix, attr, df_val, 'validation')
     copy_images(prefix, attr, df_test, 'test')
@@ -120,7 +124,7 @@ def generate_df(data_config, attr):
     df_partition.set_index('image_id', inplace=True)
     df_par_attr = df_partition.join(df_attr['Blond_Hair'], how='inner')
 
-    print('Attribute:', attr)
+    LOG.info(f'Attribute:{attr}')
 
     df_train = df_par_attr[(df_par_attr['partition'] == 0) 
                            & (df_par_attr[attr] == 0)].sample(int(int(data_config.data.TRAINING_SAMPLES)/2))
@@ -160,4 +164,4 @@ def copy_images(folder_prefix, attribute, df_images, df_type):
         if j[attribute] == 1:
             shutil.copy('data/CelebA/img_align_celeba/img_align_celeba/' + i, 'data/celeba-dataset/{}-{}/1/{}'.format(folder_prefix, df_type, i))
             
-    print("{} {} - Copy Images: DONE!".format(folder_prefix, df_type))
+    LOG.info("{} {} - Copy Images: DONE!".format(folder_prefix, df_type))
