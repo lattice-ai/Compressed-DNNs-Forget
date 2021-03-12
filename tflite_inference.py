@@ -1,6 +1,6 @@
 # Internal
 from config.config import CFG
-from model.ForgetModel import Model
+from forgetfuldnn.model.ForgetModel import Model
 
 # External
 import tensorflow as tf
@@ -23,3 +23,4 @@ x = next(iter(model.test_generator))
 tflite_interpreter.set_tensor(input_details[0]['index'], x)
 tflite_interpreter.invoke()
 tflite_model_predictions = tflite_interpreter.get_tensor(output_details[0]['index'])
+print(tflite_model_predictions)

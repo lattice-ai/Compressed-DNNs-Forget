@@ -1,6 +1,5 @@
 """ Config Class """
 
-
 import json
 
 class Config:

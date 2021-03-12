@@ -3,9 +3,9 @@ import unittest
 import tensorflow as tf
 
 # Internal 
-from dataloader.dataloader import DataLoader
+from forgetfuldnn.utils.config import Config
+from forgetfuldnn.dataloader.dataloader import DataLoader
 from config.config import CFG
-from utils.config import Config
 
 class TestDataLoader(unittest.TestCase):
     

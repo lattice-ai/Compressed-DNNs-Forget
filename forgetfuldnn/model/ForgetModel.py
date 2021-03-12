@@ -1,6 +1,6 @@
 # Internal
 from .base_model import BaseModel
-from dataloader.dataloader import DataLoader
+from forgetfuldnn.dataloader.dataloader import DataLoader
 
 # External
 import tempfile

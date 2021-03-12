@@ -1,7 +1,7 @@
 """Abstract Base Model"""
 
 from abc import ABC, abstractmethod
-from utils.config import Config
+from forgetfuldnn.utils.config import Config
 
 class BaseModel(ABC):
     """

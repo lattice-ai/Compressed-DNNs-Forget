@@ -3,7 +3,7 @@ import unittest
 import tensorflow as tf 
 # Internal 
 from config.config import CFG
-from model.ForgetModel import Model
+from forgetfuldnn.model.ForgetModel import Model
 
 class TestModel(unittest.TestCase):
     """
