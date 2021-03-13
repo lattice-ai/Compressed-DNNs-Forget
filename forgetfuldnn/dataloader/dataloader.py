@@ -2,13 +2,14 @@
 import os
 import shutil
 import pandas as pd
-import numpy as np
+from typing import Dict
 import tensorflow as tf
 
 # Internal
 from forgetfuldnn.utils.logger import get_logger
 
 LOG = get_logger("DataLoader")
+CONFIG = Dict[str, Dict[str, str]]
 
 
 class DataLoader:
@@ -17,7 +18,7 @@ class DataLoader:
     """
 
     @staticmethod
-    def load_data(data_config, prefix="blond"):
+    def load_data(data_config: CONFIG, prefix: str = "blond"):
 
         generate_dirs(data_config, "Blond_Hair", prefix)
 
@@ -81,7 +82,7 @@ with few changes to the API
 """
 
 
-def generate_dirs(data_config, attr, prefix):
+def generate_dirs(data_config: CONFIG, attr: str, prefix: str):
     """
     partition = {
         0 : train
@@ -97,7 +98,7 @@ def generate_dirs(data_config, attr, prefix):
     copy_images(prefix, attr, df_test, "test")
 
 
-def create_file_folder(prefix):
+def create_file_folder(prefix: str):
     """
     create folders in order to use the flow_from_directory method form keras
 
@@ -125,7 +126,7 @@ def create_file_folder(prefix):
         os.makedirs("data/celeba-dataset/{}-{}/1".format(prefix, typ))
 
 
-def generate_df(data_config, attr):
+def generate_df(data_config: CONFIG, attr: str):
     """
     select the sub data sets from the recommended partition randomly
     generates balanced data
@@ -188,7 +189,7 @@ def generate_df(data_config, attr):
     return df_train, df_val, df_test
 
 
-def copy_images(folder_prefix, attribute, df_images, df_type):
+def copy_images(folder_prefix, attribute: str, df_images, df_type):
     """
     copy images to the corresponding folder (classes)
 
