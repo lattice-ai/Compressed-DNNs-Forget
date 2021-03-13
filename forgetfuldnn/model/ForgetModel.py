@@ -10,7 +10,6 @@ import tempfile
 import tensorflow as tf
 import tensorflow_model_optimization as tfmot
 
-
 class Model(BaseModel):
 
     def __init__(self, config):
@@ -58,7 +57,7 @@ class Model(BaseModel):
 
         LOG.info("Model Built")
 
-    def train(self):
+    def train(self, wandb_sync = False):
         """
         Abstract Method to Train the Model and Return the Training Loss and Validation Loss
         """
