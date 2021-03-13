@@ -4,5 +4,5 @@ from forgetfuldnn.model.ForgetModel import Model
 
 model = Model(CFG)
 model.build()
-model.load_pruned(weights="weights/model_ninety.h5", factor=0.9)
+model.load_pruned(weights="", factor=None)
 model.export_tflite()
