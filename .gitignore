@@ -11,6 +11,9 @@
 # VSCode
 .vscode
 
+# Mypy
+.mypy_cache
+
 # data
 data
 
