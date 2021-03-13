@@ -7,5 +7,5 @@ import tensorflow as tf
 
 model = Model(CFG)
 model.build()
-model.load_pruned(weights="weights/model_seventy.h5", factor=0.7)
+model.load_pruned(weights="weights/model_ninety.h5", factor=0.9)
 model.export_tflite()
