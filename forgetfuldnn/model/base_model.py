@@ -3,6 +3,7 @@
 from abc import ABC, abstractmethod
 from forgetfuldnn.utils.config import Config
 
+
 class BaseModel(ABC):
     """
     Abstract Model class that is inherited to all models
