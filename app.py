@@ -1,21 +1,5 @@
-# Configuration File
-CFG = {
-    "data": {
-        "data_folder": "data/CelebA/",
-        "images_folder": "data/CelebA/img_align_celeba/img_align_celeba/",
-        "IMG_HEIGHT": "218",
-        "IMG_WIDTH": "178",
-        "TRAINING_SAMPLES": "10000",
-        "VALIDATION_SAMPLES": "2000",
-        "TEST_SAMPLES": "2000",
-    },
-    "train": {
-        "BATCH_SIZE": "64",
-        "EPOCHS": "10",
-    },
-}
-
-# Internal
+# Imports
+import os
 import cv2
 import numpy as np
 from PIL import Image
@@ -24,13 +8,15 @@ import tensorflow as tf
 from matplotlib import pyplot as plt
 
 def get_predictions(input_image):
-    tflite_interpreter = tf.lite.Interpreter(model_path="tflite_models/fifty_pruned.tflite")
-    input_details = tflite_interpreter.get_input_details()
-    output_details = tflite_interpreter.get_output_details()
-    tflite_interpreter.allocate_tensors()
-    tflite_interpreter.set_tensor(input_details[0]["index"], input_image)
-    tflite_interpreter.invoke()
-    tflite_model_predictions = tflite_interpreter.get_tensor(output_details[0]["index"])    
+    tflite_model_predictions = []
+    for i in os.listdir("tflite_models/"):
+        tflite_interpreter = tf.lite.Interpreter(model_path="tflite_models/" + str(i))
+        input_details = tflite_interpreter.get_input_details()
+        output_details = tflite_interpreter.get_output_details()
+        tflite_interpreter.allocate_tensors()
+        tflite_interpreter.set_tensor(input_details[0]["index"], input_image)
+        tflite_interpreter.invoke()
+        tflite_model_predictions.append(tflite_interpreter.get_tensor(output_details[0]["index"]))
     return tflite_model_predictions
 
 ## Page Title
@@ -54,4 +40,5 @@ if uploaded_file is not None:
 
 if st.button("Predict"):
     suggestion = get_predictions(input_image = img)
-    st.write(suggestion)
+    for i in suggestion:
+        st.write(i)
