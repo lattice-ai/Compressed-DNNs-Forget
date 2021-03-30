@@ -41,7 +41,12 @@ You can interact with the web app at this [link](https://share.streamlit.io/saur
 2. Activate the Environment `conda activate compression`
 3. Run the Application `streamlit run app.py`
 
+## Docker Approach
 
+```
+docker pull docker.pkg.github.com/sauravmaheshkar/compressed-dnns-forget/compression-app:latest
+docker run -p 8501:8501 compression-app:latest                                                             
+```
 
 
 # Contribute
