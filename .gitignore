@@ -8,6 +8,9 @@
 # VSCode
 .vscode
 
+# Wandb
+wandb
+
 # data
 data
 
