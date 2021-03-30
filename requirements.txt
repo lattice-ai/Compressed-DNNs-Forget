@@ -6,7 +6,6 @@ Keras-Preprocessing==1.1.2
 numpy==1.19.2
 Pillow==8.1.1
 streamlit==0.78.0
-tensorflow==2.4.1
-tensorflow-estimator==2.4.0
+tensorflow-cpu
 wandb==0.10.20
-opencv-python
+opencv-python==4.2.0.34
