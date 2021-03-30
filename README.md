@@ -2,6 +2,8 @@
 
 This Project aims to reproduce the claims of the paper titled "What Do Compressed Deep Neural Networks Forget?" by Sara Hooker, Aaron Courville, Gregory Clark, Yann Dauphin and Andrea Frome. 
 
+![](https://github.com/SauravMaheshkar/Compressed-DNNs-Forget/blob/main/assets/Pruning.png)
+
 # Weights and Biases Project Page
 
 Weights and Biases Client were used to conduct all the experiments. You can explore the Project [here](https://wandb.ai/sauravmaheshkar/exploring-bias-and-compression).
@@ -24,6 +26,10 @@ Weights and Biases Client were used to conduct all the experiments. You can expl
 You can interact with the web app at this [link](https://share.streamlit.io/sauravmaheshkar/compressed-dnns-forget/web-app/app.py). Some identified PIE's are also available on the website.
 
 ![Banner Image](https://github.com/SauravMaheshkar/Compressed-DNNs-Forget/blob/web-app/App-Image.png)
+
+# Methods of Pruning
+
+![](https://github.com/SauravMaheshkar/Compressed-DNNs-Forget/blob/main/assets/Methods%20of%20Pruning.png)
 
 # Steps for Reproduction
 
