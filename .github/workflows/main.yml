@@ -1,21 +1,25 @@
-name: Black Linting and Unittest
+name: Black Linting
 
 on: [push]
 
 jobs:
-  build-linux:
-    name: Linux
-    runs-on: "ubuntu-latest"
-    defaults:
-      run:
-        shell: bash -l {0}
+  run-linters:
+    name: Run linters
+    runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v2
-      - uses: conda-incubator/setup-miniconda@v2
+      - name: Check out Git repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v1
         with:
-          activate-environment: compression
-          environment-file: conda-env.yml
-          python-version: 3.6
-      - run: |
-          conda info
-          conda list
+          python-version: 3.8
+
+      - name: Install Python dependencies
+        run: pip install black 
+
+      - name: Run linters
+        uses: wearerequired/lint-action@v1
+        with:
+          black: true
