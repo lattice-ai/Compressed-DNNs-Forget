@@ -23,14 +23,11 @@ chardet==4.0.0
 click==7.1.2
 configparser==5.0.2
 coverage==5.5
-cryptography==3.4.6
 cycler==0.10.0
 Cython==0.29.22
-dataclasses==0.8
 decorator==4.4.2
 defusedxml==0.7.1
 dm-tree==0.1.5
-docker-pycreds==0.4.0
 entrypoints==0.3
 flake8==3.8.4
 flatbuffers==1.12
