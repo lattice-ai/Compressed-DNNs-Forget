@@ -6,7 +6,19 @@ This Project aims to reproduce the claims of the paper titled "What Do Compresse
 
 Weights and Biases Client were used to conduct all the experiments. You can explore the Project [here](https://wandb.ai/sauravmaheshkar/exploring-bias-and-compression).
 
+# Metrics
 
+## Train Top-1 Accuracy
+
+![](https://github.com/SauravMaheshkar/Compressed-DNNs-Forget/blob/main/assets/Acc.png)
+
+## Validation Top-1 Accuracy
+
+![](https://github.com/SauravMaheshkar/Compressed-DNNs-Forget/blob/main/assets/Val_Acc.png)
+
+## Training Loss
+
+![](https://github.com/SauravMaheshkar/Compressed-DNNs-Forget/blob/main/assets/Loss.png)
 # Web Application
 
 You can interact with the web app at this [link](https://share.streamlit.io/sauravmaheshkar/compressed-dnns-forget/web-app/app.py). Some identified PIE's are also available on the website.
