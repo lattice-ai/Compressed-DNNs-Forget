@@ -16,7 +16,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install tensorflow pandas pyyaml
+        pip install tensorflow pandas pyyaml tensorflow-model-optimization
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Test with UnitTest
       run: |
